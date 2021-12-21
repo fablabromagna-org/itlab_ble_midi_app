@@ -3,6 +3,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:itlab_midi_ble/ble/device.dart';
 import 'package:itlab_midi_ble/di/di_initializer.dart';
 import 'package:itlab_midi_ble/ui/colors.dart';
+import 'package:itlab_midi_ble/ui/component/discovered_device/discovered_device.dart';
 import 'package:itlab_midi_ble/ui/component/toolbar/toolbar.dart';
 import 'package:itlab_midi_ble/ui/home_page/home_page_view_model.dart';
 import 'package:itlab_midi_ble/ui/home_page/home_page_view_state.dart';
@@ -71,7 +72,19 @@ class HomePage extends StatelessWidget {
         ),
       );
     } else {
-      return Column();
+      final device = connectedDevice!;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DiscoveredDeviceItem(device.deviceInformation.name,
+              device.deviceInformation.id, device.deviceInformation.rssi),
+          const SizedBox(height: 24),
+          Text(
+            'Device configuration',
+            style: TextStyle(color: AppColors.textColor, fontSize: 18),
+          ),
+        ],
+      );
     }
   }
 }

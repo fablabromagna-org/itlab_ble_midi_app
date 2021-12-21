@@ -5,13 +5,20 @@ import 'package:itlab_midi_ble/domain/board/mode.dart';
 /// More information here https://github.com/fablabromagna-org/itlab_ble_midi_board/tree/feature/4_fs_controller/software/esp32/platformio_sources/flr_ble_midi_board
 class Configuration {
   final String deviceName;
+  final String version;
   final Mode mode;
   final int numberOfFootswitches;
   final List<InternalVariable> internalVariable;
   final List<FootswitchConfiguration> footswitches;
 
-  Configuration(this.deviceName, this.mode, this.numberOfFootswitches,
-      this.internalVariable, this.footswitches);
+  Configuration(
+    this.deviceName,
+    this.version,
+    this.mode,
+    this.numberOfFootswitches,
+    this.internalVariable,
+    this.footswitches,
+  );
 }
 
 class InternalVariable {
@@ -19,5 +26,5 @@ class InternalVariable {
   final int minValue;
   final bool cycle;
 
-  InternalVariable(this.maxValue, this.minValue, this.cycle);
+  InternalVariable(this.minValue, this.maxValue, this.cycle);
 }

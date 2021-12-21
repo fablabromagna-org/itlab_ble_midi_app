@@ -115,6 +115,11 @@ class BleManager {
             }).onError((dynamic error) {
               print('Error receiveng midi: $error');
             });
+            _flutterReactiveBle
+                .subscribeToCharacteristic(_configurationCharacteristic)
+                .listen((event) {
+              //TODO: tranform List<int> to Configuration
+            });
             break;
           }
         case DeviceConnectionState.disconnected:

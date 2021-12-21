@@ -11,4 +11,15 @@ extension ModeExtension on Mode {
         return 2;
     }
   }
+
+  static Mode getModeFromValue(int value) {
+    switch (value) {
+      case 1:
+        return Mode.SERVER;
+      case 2:
+        return Mode.CLIENT;
+      default:
+        return Mode.SERVER;
+    }
+  }
 }
