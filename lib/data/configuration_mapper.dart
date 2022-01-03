@@ -18,7 +18,8 @@ class ConfigurationMapper extends Mapper<List<int>, Configuration> {
       String.fromCharCodes(() {
         final charList = objectToMap.sublist(1, 33);
         // this remove padding
-        charList.removeWhere((element) => element == 0x00);
+        //List.from is necessary because charList is fixed length
+        List.from(charList).removeWhere((element) => element == 0x00);
         return charList;
       }.call()),
       '${objectToMap[33]}.${objectToMap[34]}',

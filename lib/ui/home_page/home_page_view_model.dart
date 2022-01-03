@@ -21,5 +21,8 @@ class HomePageViewModel {
     _bleManager.connectedDeviceStream.listen((device) {
       localViewState = _localViewState.copyWith(connectedDevice: device);
     });
+    _bleManager.deviceConfiguraion.listen((event) {
+      localViewState = _localViewState.copyWith(configuration: event);
+    });
   }
 }
