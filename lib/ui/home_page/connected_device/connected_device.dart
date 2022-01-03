@@ -13,6 +13,7 @@ class ConnectedDevice extends StatelessWidget {
     this._configuration, {
     Key? key,
   }) : super(key: key);
+  static const double footswitchWidth = 180;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class ConnectedDevice extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, position) {
             return Footswitch(_configuration.footswitches[position],
-                _configuration.internalVariable);
+                _configuration.internalVariable, footswitchWidth);
           },
           itemCount: _configuration.numberOfFootswitches,
         ),

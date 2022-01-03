@@ -9,26 +9,30 @@ import 'package:itlab_midi_ble/ui/colors.dart';
 class Footswitch extends StatelessWidget {
   final FootswitchConfiguration _footswitchConfiguration;
   final List<InternalVariable> _internalVariables;
+  final double width;
+  static const double padding = 8.0;
+  static const double _iconRadius = 30;
 
   const Footswitch(
     this._footswitchConfiguration,
-    this._internalVariables, {
+    this._internalVariables,
+    this.width, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(padding),
         decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.all(Radius.circular(padding)),
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(
-            Radius.circular(8.0),
+            Radius.circular(padding),
           ),
           child: SizedBox(
-            width: 180,
+            width: width,
             child: Stack(
               children: [
                 Column(children: [
@@ -42,17 +46,17 @@ class Footswitch extends StatelessWidget {
                   ),
                 ]),
                 Positioned(
-                    left: 60,
+                    left: width / 2 - _iconRadius,
                     top: 20,
                     child: CircleAvatar(
-                      radius: 30,
+                      radius: _iconRadius,
                       backgroundColor: AppColors.textColor,
                       child: SvgPicture.asset('assets/ic_footswitch.svg',
                           width: 40, height: 40),
                     )),
                 Positioned(
                     top: 70,
-                    width: 180,
+                    width: width,
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -198,6 +202,7 @@ class FootswitchInformationColumn extends StatelessWidget {
         break;
     }
     footswitchInformation = Column(
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

@@ -122,58 +122,63 @@ class _SettingsPageState extends State<SettingsPage> {
                     : Icons.bluetooth_disabled,
                 null,
                 false),
-            body: Padding(
-              padding: const EdgeInsets.only(top: 32.0, left: 24, right: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Devices found:',
-                    style: TextStyle(color: AppColors.textColor, fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  DiscoveredDevicesList(
-                    viewState?.foundDevices ?? [],
-                    onItemClickListener: _viewModel.connectToDevice,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                          onPressed: viewState?.startScanButton.onButtonPressed,
-                          child: Text(
-                            'Start scan',
-                            style: TextStyle(color: AppColors.textColor),
-                          )),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      ElevatedButton(
-                          onPressed: viewState?.stopScanButton.onButtonPressed,
-                          child: Text(
-                            'Stop scan',
-                            style: TextStyle(color: AppColors.textColor),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  if (viewState?.isDeviceConnected == true)
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () => _viewModel.disconnect(),
-                          child: Text('Disconnect',
-                              style: TextStyle(color: AppColors.textColor))),
-                    )
-                ],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 32.0, left: 24, right: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Devices found:',
+                      style:
+                          TextStyle(color: AppColors.textColor, fontSize: 18),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    DiscoveredDevicesList(
+                      viewState?.foundDevices ?? [],
+                      onItemClickListener: _viewModel.connectToDevice,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed:
+                                viewState?.startScanButton.onButtonPressed,
+                            child: Text(
+                              'Start scan',
+                              style: TextStyle(color: AppColors.textColor),
+                            )),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        ElevatedButton(
+                            onPressed:
+                                viewState?.stopScanButton.onButtonPressed,
+                            child: Text(
+                              'Stop scan',
+                              style: TextStyle(color: AppColors.textColor),
+                            ))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    if (viewState?.isDeviceConnected == true)
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: () => _viewModel.disconnect(),
+                            child: Text('Disconnect',
+                                style: TextStyle(color: AppColors.textColor))),
+                      )
+                  ],
+                ),
               ),
             ),
           );
