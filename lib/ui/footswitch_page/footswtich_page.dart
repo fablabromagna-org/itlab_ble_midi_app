@@ -4,6 +4,7 @@ import 'package:itlab_midi_ble/domain/board/configuration.dart';
 import 'package:itlab_midi_ble/ui/colors.dart';
 import 'package:itlab_midi_ble/ui/component/toolbar/toolbar.dart';
 import 'package:itlab_midi_ble/ui/footswitch_page/fooswitch_page_view_model.dart';
+import 'package:itlab_midi_ble/ui/footswitch_page/footswitch_configuration/footswitch_configuration.dart';
 import 'package:itlab_midi_ble/ui/footswitch_page/footswitch_page_view_state.dart';
 import 'package:itlab_midi_ble/ui/home_page/connected_device/footswitch.dart';
 
@@ -61,17 +62,24 @@ class FootswitchPage extends StatelessWidget {
         ),
       );
     } else {
-      return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, position) {
-          return Footswitch(
-            configuration!.footswitches[position],
-            configuration.internalVariable,
-            MediaQuery.of(context).size.width - Footswitch.padding,
-          ); // remove padding (16) to calculate precise width
-        },
-        itemCount: configuration!.numberOfFootswitches,
-      );
+      return configuration != null
+          ? ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, position) {
+                return Footswitch(
+                  configuration.footswitches[position],
+                  configuration.internalVariable,
+                  MediaQuery.of(context).size.width - Footswitch.padding,
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => FootswitchConfigurationWidget(
+                            position, configuration.footswitches[position])));
+                  },
+                ); // remove padding (16) to calculate precise width
+              },
+              itemCount: configuration.numberOfFootswitches,
+            )
+          : Container();
     }
   }
 }

@@ -5,8 +5,9 @@ AppBar getAppBar(
   final String title,
   final IconData icon,
   final Function()? iconClickListener,
-  final bool isBackEnabled,
-) =>
+  final bool isBackEnabled, {
+  Function()? onBackPressed,
+}) =>
     AppBar(
       backgroundColor: AppColors.primary,
       title: Text(
@@ -27,7 +28,7 @@ AppBar getAppBar(
       ],
       leading: isBackEnabled
           ? IconButton(
-              onPressed: iconClickListener,
+              onPressed: onBackPressed,
               icon: const Icon(Icons.arrow_back_ios_new))
           : null,
     );

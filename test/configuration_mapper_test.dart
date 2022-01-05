@@ -21,8 +21,22 @@ void main() {
       ],
       [
         FootswitchConfiguration(
-          FootswitchEvent(EventType.SINGLE, 3, MidiType.CC, 22, 44, 0, 0),
-          FootswitchEvent(EventType.SINGLE, 3, MidiType.CC, 22, 44, 0, 0),
+          const FootswitchEvent(
+              eventType: EventType.SINGLE,
+              midiChannel: 3,
+              midiType: MidiType.CC,
+              midiNumber: 22,
+              midiValueOn: 44,
+              groupIndex: 0,
+              internalValueIndex: 0),
+          const FootswitchEvent(
+              eventType: EventType.SINGLE,
+              midiChannel: 3,
+              midiType: MidiType.CC,
+              midiNumber: 22,
+              midiValueOn: 44,
+              groupIndex: 0,
+              internalValueIndex: 0),
         ),
       ],
     );

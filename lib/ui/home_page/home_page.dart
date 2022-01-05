@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
       );
     } else {
       final device = connectedDevice!;
-      return ConnectedDevice(device, configuration!);
+      return ConnectedDevice(device, configuration);
     }
   }
 }

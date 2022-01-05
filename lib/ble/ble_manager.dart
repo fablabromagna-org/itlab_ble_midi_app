@@ -9,6 +9,7 @@ import 'package:itlab_midi_ble/ble/device.dart';
 import 'package:itlab_midi_ble/ble/ota/ota_manager.dart';
 import 'package:itlab_midi_ble/data/configuration_mapper.dart';
 import 'package:itlab_midi_ble/domain/board/configuration.dart';
+import 'package:itlab_midi_ble/domain/board/footswitch/footswitch_configuration.dart';
 
 @singleton
 @injectable
@@ -44,6 +45,7 @@ class BleManager {
   final StreamController<Configuration?> _deviceConfiguration =
       StreamController.broadcast();
   Stream<Configuration?> get deviceConfiguraion => _deviceConfiguration.stream;
+  Configuration? _localConfiguration;
 
   final StreamController<List<int>> _midiDataReceived =
       StreamController.broadcast();
@@ -88,6 +90,7 @@ class BleManager {
     _connectedDeviceStream.add(null);
     _discoveredDevices.clear();
     _deviceConfiguration.add(null);
+    _localConfiguration = null;
     await _connection?.cancel();
     _connection = null;
   }
@@ -99,9 +102,10 @@ class BleManager {
       prescanDuration: const Duration(seconds: 1),
       withServices: [_DEVICE_UUID, _OTA_CHARACTERISTIC, _MIDI_CHARACTERISTIC],
     );
-    int mtu = await _flutterReactiveBle.requestMtu(
-        deviceId: deviceToConnect.id, mtu: 517);
-    print('** Negotiated MTU: $mtu');
+    _flutterReactiveBle
+        .requestMtu(deviceId: deviceToConnect.id, mtu: 517)
+        .then((value) => print('** Negotiated MTU: $value'));
+
     _connection = currentConnectionStream.listen((event) async {
       _connectedDeviceStream
           .add(Device(deviceToConnect, event.connectionState));
@@ -131,8 +135,10 @@ class BleManager {
             //request configuration
             final configurationFromDevice = await _flutterReactiveBle
                 .readCharacteristic(_configurationCharacteristic);
-            _deviceConfiguration
+            _deviceConfiguration.sink
                 .add(_configurationMapper.mapTo(configurationFromDevice));
+            _localConfiguration =
+                _configurationMapper.mapTo(configurationFromDevice);
 
             break;
           }
@@ -145,5 +151,32 @@ class BleManager {
           break;
       }
     });
+  }
+
+  Future sendFootswitchConfiguration(
+      int footSwitchNumber, FootswitchConfiguration configuration) async {
+    final currentConfiguration = _localConfiguration;
+    if (currentConfiguration != null) {
+      final footswitches =
+          List<FootswitchConfiguration>.from(currentConfiguration.footswitches);
+      footswitches[footSwitchNumber] = configuration;
+      final newConfiguration = Configuration(
+        currentConfiguration.deviceName,
+        currentConfiguration.version,
+        currentConfiguration.mode,
+        currentConfiguration.numberOfFootswitches,
+        currentConfiguration.internalVariable,
+        footswitches,
+      );
+      return _flutterReactiveBle
+          .writeCharacteristicWithResponse(_configurationCharacteristic,
+              value: _configurationMapper.mapFrom(newConfiguration))
+          .then((value) {
+        _localConfiguration = newConfiguration;
+        _deviceConfiguration.add(newConfiguration);
+      });
+    } else {
+      throw Exception('Configuration is null, WTF');
+    }
   }
 }

@@ -10,6 +10,7 @@ class Footswitch extends StatelessWidget {
   final FootswitchConfiguration _footswitchConfiguration;
   final List<InternalVariable> _internalVariables;
   final double width;
+  final void Function()? onTap;
   static const double padding = 8.0;
   static const double _iconRadius = 30;
 
@@ -18,6 +19,7 @@ class Footswitch extends StatelessWidget {
     this._internalVariables,
     this.width, {
     Key? key,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -31,50 +33,54 @@ class Footswitch extends StatelessWidget {
           borderRadius: const BorderRadius.all(
             Radius.circular(padding),
           ),
-          child: SizedBox(
-            width: width,
-            child: Stack(
-              children: [
-                Column(children: [
-                  Container(
-                    color: Colors.amber,
-                    height: 52,
-                  ),
-                  Container(
-                    color: AppColors.textColor,
-                    height: 218,
-                  ),
-                ]),
-                Positioned(
-                    left: width / 2 - _iconRadius,
-                    top: 20,
-                    child: CircleAvatar(
-                      radius: _iconRadius,
-                      backgroundColor: AppColors.textColor,
-                      child: SvgPicture.asset('assets/ic_footswitch.svg',
-                          width: 40, height: 40),
-                    )),
-                Positioned(
-                    top: 70,
-                    width: width,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FootswitchInformationColumn(
-                            _footswitchConfiguration.tapConfiguration,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox(
+              width: width,
+              child: Stack(
+                children: [
+                  Column(children: [
+                    Container(
+                      color: AppColors.groupColors[
+                          _footswitchConfiguration.tapConfiguration.groupIndex],
+                      height: 52,
+                    ),
+                    Container(
+                      color: AppColors.textColor,
+                      height: 218,
+                    ),
+                  ]),
+                  Positioned(
+                      left: width / 2 - _iconRadius,
+                      top: 20,
+                      child: CircleAvatar(
+                        radius: _iconRadius,
+                        backgroundColor: AppColors.textColor,
+                        child: SvgPicture.asset('assets/ic_footswitch.svg',
+                            width: 40, height: 40),
+                      )),
+                  Positioned(
+                      top: 70,
+                      width: width,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FootswitchInformationColumn(
+                              _footswitchConfiguration.tapConfiguration,
+                              _internalVariables,
+                              'TAP'),
+                          FootswitchInformationColumn(
+                            _footswitchConfiguration.holdConfiguration,
                             _internalVariables,
-                            'TAP'),
-                        FootswitchInformationColumn(
-                          _footswitchConfiguration.holdConfiguration,
-                          _internalVariables,
-                          'HOLD',
-                          isHold: true,
-                        )
-                      ],
-                    ))
-              ],
+                            'HOLD',
+                            isHold: true,
+                          )
+                        ],
+                      ))
+                ],
+              ),
             ),
           ),
         ));
