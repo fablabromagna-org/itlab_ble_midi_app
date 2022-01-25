@@ -184,8 +184,10 @@ class FootswitchEventWidget extends StatelessWidget {
                             TextStyle(color: AppColors.textColor, fontSize: 14),
                       ),
                       CustomNumberField(
-                        (interval) => footswitchEvent.copyWith(
-                            stepValue: interval, positiveStep: interval >= 0),
+                        (interval) => onConfigurationChanged(
+                            footswitchEvent.copyWith(
+                                stepValue: interval,
+                                positiveStep: interval >= 0)),
                         minNumber: -127,
                         maxNumber: 127,
                         text: footswitchEvent.stepValue.toString(),
@@ -235,6 +237,24 @@ class FootswitchEventWidget extends StatelessWidget {
                         minNumber: 0,
                         maxNumber: 127,
                         text: footswitchEvent.midiValueOff.toString(),
+                      )
+                    ],
+                  ),
+                  marginWidget,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Midi Value on:',
+                        style:
+                            TextStyle(color: AppColors.textColor, fontSize: 14),
+                      ),
+                      CustomNumberField(
+                        (value) => onConfigurationChanged(
+                            footswitchEvent.copyWith(midiValueOff: value)),
+                        minNumber: 0,
+                        maxNumber: 127,
+                        text: footswitchEvent.midiValueOn.toString(),
                       )
                     ],
                   ),
@@ -302,19 +322,36 @@ class FootswitchEventWidget extends StatelessWidget {
           ],
         ),
         marginWidget,
+        if (footswitchEvent.eventType != EventType.ON_OFF) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Midi value:',
+                style: TextStyle(color: AppColors.textColor, fontSize: 14),
+              ),
+              CustomNumberField(
+                  (value) => onConfigurationChanged(
+                      footswitchEvent.copyWith(midiValueOn: value)),
+                  text: footswitchEvent.midiValueOn.toString()),
+            ],
+          ),
+          marginWidget,
+        ],
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Midi value:',
+              'Midi channel:',
               style: TextStyle(color: AppColors.textColor, fontSize: 14),
             ),
             CustomNumberField(
-                (value) => onConfigurationChanged(
-                    footswitchEvent.copyWith(midiValueOn: value)),
-                text: footswitchEvent.midiValueOn.toString()),
+              (value) => onConfigurationChanged(
+                  footswitchEvent.copyWith(midiChannel: value)),
+              text: footswitchEvent.midiChannel.toString(),
+            )
           ],
-        ),
+        )
       ],
     );
   }

@@ -66,6 +66,8 @@ class _CustomNumberFieldState extends State<CustomNumberField> {
             if (interval >= widget.minNumber && interval <= widget.maxNumber) {
               widget.onNumberChanged(interval);
             }
+            // close the keyboard on Done pressed
+            FocusManager.instance.primaryFocus?.unfocus();
           },
           maxLength: 3,
           maxLines: 1,
