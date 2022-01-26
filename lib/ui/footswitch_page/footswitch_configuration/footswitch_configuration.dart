@@ -195,6 +195,40 @@ class FootswitchEventWidget extends StatelessWidget {
                     ],
                   ),
                   marginWidget,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Used variable:',
+                        style:
+                            TextStyle(color: AppColors.textColor, fontSize: 14),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        color: AppColors.textColor,
+                        width: 70,
+                        child: DropdownButton<int>(
+                            isExpanded: true,
+                            isDense: true,
+                            underline: const SizedBox(),
+                            value: footswitchEvent.internalValueIndex + 1,
+                            items: [1, 2, 3, 4]
+                                .map<DropdownMenuItem<int>>(
+                                    (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e.toString()),
+                                        ))
+                                .toList(),
+                            onChanged: (item) {
+                              if (item != null) {
+                                onConfigurationChanged(footswitchEvent.copyWith(
+                                    internalValueIndex: item - 1));
+                              }
+                            }),
+                      )
+                    ],
+                  ),
+                  marginWidget,
                   if (showRepeat)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
