@@ -13,7 +13,7 @@ class SettingsViewModel {
   final BleManager _bleManager;
 
   late SettingsViewState _localViewState = SettingsViewState();
-  set localViewState(SettingsViewState value) {
+  set __localViewState(SettingsViewState value) {
     _localViewState = value;
     _viewState.add(value);
   }
@@ -24,16 +24,16 @@ class SettingsViewModel {
 
   SettingsViewModel(this._bleManager) {
     Future.delayed(const Duration(seconds: 1), () {
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
           startScanButton: FooterButton(true, startScan));
     });
     _bleManager.discoveredBleDevices.listen((devices) {
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
         foundDevices: devices,
       );
     });
     _bleManager.connectedDeviceStream.listen((device) {
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
           isDeviceConnected:
               device?.connectionState == DeviceConnectionState.connected,
           connectingDevice: device);
@@ -42,7 +42,7 @@ class SettingsViewModel {
 
   void stopScan() async {
     await _bleManager.stopScan();
-    localViewState = _localViewState.copyWith(
+    __localViewState = _localViewState.copyWith(
         startScanButton: FooterButton(true, startScan),
         stopScanButton: const FooterButton(false, null));
   }
@@ -59,17 +59,17 @@ class SettingsViewModel {
     if (goForIt) {
       //TODO replace True with permission == PermissionStatus.granted is for IOS test
       _bleManager.scanForBleDevices();
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
           startScanButton: const FooterButton(false, null),
           stopScanButton: FooterButton(true, stopScan));
     } else {
-      localViewState =
+      __localViewState =
           _localViewState.copyWith(showLocationPermissionDialog: true);
     }
   }
 
   void onPermissionSubmitted(PermissionStatus status) async {
-    localViewState =
+    __localViewState =
         _localViewState.copyWith(showLocationPermissionDialog: false);
     if (status == PermissionStatus.granted) {
       startScan();
@@ -98,7 +98,7 @@ class SettingsViewModel {
 
     if (updateFile != null && updateFile.path != null) {
       _bleManager.initOTA(File.fromUri(Uri.parse(updateFile.path!)));
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
           isOtaReady: true, selectedOtaFile: updateFile.name);
     } else {
       // TODO: decide what to do in case of failure, maybe show a popup?
@@ -107,13 +107,13 @@ class SettingsViewModel {
 
   void startOTA() async {
     _bleManager.performOTA().listen((event) {
-      localViewState = _localViewState.copyWith(uploadFilePercentage: event);
+      __localViewState = _localViewState.copyWith(uploadFilePercentage: event);
     }, onError: (error) {
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
         isOtaReady: false,
       );
     }, onDone: () {
-      localViewState = _localViewState.copyWith(
+      __localViewState = _localViewState.copyWith(
         isOtaReady: false,
       );
     });

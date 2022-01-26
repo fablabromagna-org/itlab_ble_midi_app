@@ -19,6 +19,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final SettingsViewModel _viewModel = getIt<SettingsViewModel>();
+  bool _anotherDialogIsShown = false;
 
   @override
   initState() {
@@ -31,6 +32,12 @@ class _SettingsPageState extends State<SettingsPage> {
         showConnectingDeviceDialog(viewState.connectingDevice!);
       }
     });
+  }
+
+  void _dismissDialog() {
+    if (_anotherDialogIsShown) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 
   Future<void> showNoPermissionDialog() async => showDialog<void>(
@@ -60,6 +67,8 @@ class _SettingsPageState extends State<SettingsPage> {
       );
 
   Future<void> showConnectingDeviceDialog(Device connectingDevice) async {
+    _dismissDialog();
+    _anotherDialogIsShown = true;
     String lottieAsset = 'assets/loading.json';
     final bool isConnected =
         connectingDevice.connectionState == DeviceConnectionState.connected;
@@ -90,7 +99,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         width: 78,
                         height: 78,
                         fit: BoxFit.fill,
-                        repeat: !isConnected),
+                        repeat: connectingDevice.connectionState ==
+                            DeviceConnectionState.connecting),
                     const SizedBox(height: 44),
                     if (isConnected)
                       const Text(
@@ -98,14 +108,19 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: TextStyle(fontSize: 18),
                       ),
                     if (!isConnected)
-                      Text(
-                          'Connecting to ${connectingDevice.deviceInformation.name}'),
+                      Text((connectingDevice.connectionState ==
+                                  DeviceConnectionState.connecting
+                              ? 'Connecting to'
+                              : 'Failed to conned to') +
+                          ' ${connectingDevice.deviceInformation.name}'),
                     const SizedBox(height: 12),
-                    if (!isConnected) const Text('Please wait'),
+                    if (connectingDevice.connectionState ==
+                        DeviceConnectionState.connecting)
+                      const Text('Please wait'),
                   ],
                 ),
               ),
-            ));
+            )).then((value) => (_anotherDialogIsShown = false));
   }
 
   @override
@@ -122,58 +137,63 @@ class _SettingsPageState extends State<SettingsPage> {
                     : Icons.bluetooth_disabled,
                 null,
                 false),
-            body: Padding(
-              padding: const EdgeInsets.only(top: 32.0, left: 24, right: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Devices found:',
-                    style: TextStyle(color: AppColors.textColor, fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  DiscoveredDevicesList(
-                    viewState?.foundDevices ?? [],
-                    onItemClickListener: _viewModel.connectToDevice,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                          onPressed: viewState?.startScanButton.onButtonPressed,
-                          child: Text(
-                            'Start scan',
-                            style: TextStyle(color: AppColors.textColor),
-                          )),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      ElevatedButton(
-                          onPressed: viewState?.stopScanButton.onButtonPressed,
-                          child: Text(
-                            'Stop scan',
-                            style: TextStyle(color: AppColors.textColor),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  if (viewState?.isDeviceConnected == true)
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () => _viewModel.disconnect(),
-                          child: Text('Disconnect',
-                              style: TextStyle(color: AppColors.textColor))),
-                    )
-                ],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 32.0, left: 24, right: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Devices found:',
+                      style:
+                          TextStyle(color: AppColors.textColor, fontSize: 18),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    DiscoveredDevicesList(
+                      viewState?.foundDevices ?? [],
+                      onItemClickListener: _viewModel.connectToDevice,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed:
+                                viewState?.startScanButton.onButtonPressed,
+                            child: Text(
+                              'Start scan',
+                              style: TextStyle(color: AppColors.textColor),
+                            )),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        ElevatedButton(
+                            onPressed:
+                                viewState?.stopScanButton.onButtonPressed,
+                            child: Text(
+                              'Stop scan',
+                              style: TextStyle(color: AppColors.textColor),
+                            ))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    if (viewState?.isDeviceConnected == true)
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: () => _viewModel.disconnect(),
+                            child: Text('Disconnect',
+                                style: TextStyle(color: AppColors.textColor))),
+                      )
+                  ],
+                ),
               ),
             ),
           );

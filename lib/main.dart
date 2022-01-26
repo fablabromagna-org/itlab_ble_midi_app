@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:itlab_midi_ble/ui/colors.dart';
 import 'package:itlab_midi_ble/ui/component/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:itlab_midi_ble/ui/footswitch_page/footswtich_page.dart';
 import 'package:itlab_midi_ble/ui/home_page/home_page.dart';
 import 'package:itlab_midi_ble/ui/settings_page/settings_page.dart';
 
@@ -33,7 +34,11 @@ class MyApp extends StatelessWidget {
 }
 
 class PageContainer extends StatefulWidget {
-  final List<Widget> pages = [HomePage(), HomePage(), SettingsPage()];
+  final List<Widget> pages = [
+    HomePage(),
+    FootswitchPage(),
+    const SettingsPage()
+  ];
   PageContainer({Key? key}) : super(key: key);
   @override
   _PageContainerState createState() => _PageContainerState();

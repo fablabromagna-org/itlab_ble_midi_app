@@ -18,7 +18,8 @@ class ConfigurationMapper extends Mapper<List<int>, Configuration> {
       String.fromCharCodes(() {
         final charList = objectToMap.sublist(1, 33);
         // this remove padding
-        charList.removeWhere((element) => element == 0x00);
+        //List.from is necessary because charList is fixed length
+        List.from(charList).removeWhere((element) => element == 0x00);
         return charList;
       }.call()),
       '${objectToMap[33]}.${objectToMap[34]}',
@@ -98,13 +99,13 @@ class FootswitchEventMapper extends Mapper<List<int>, FootswitchEvent> {
     //remove control byte (first and last)
     final configurationBytes = objectToMap.sublist(1, byteSize);
     return FootswitchEvent(
-        EventTypeExtension.getByValue(configurationBytes[0]),
-        configurationBytes[1],
-        MidiTypeExtension.getByValue(configurationBytes[2]),
-        configurationBytes[3],
-        configurationBytes[4],
-        configurationBytes[7],
-        configurationBytes[8],
+        eventType: EventTypeExtension.getByValue(configurationBytes[0]),
+        midiChannel: configurationBytes[1],
+        midiType: MidiTypeExtension.getByValue(configurationBytes[2]),
+        midiNumber: configurationBytes[3],
+        midiValueOn: configurationBytes[4],
+        groupIndex: configurationBytes[7],
+        internalValueIndex: configurationBytes[8],
         midiValueOff: configurationBytes[5],
         positiveStep: configurationBytes[9] == 1,
         repeatIntervalMs: configurationBytes[6],
